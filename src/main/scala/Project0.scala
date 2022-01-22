@@ -5,15 +5,32 @@ import scala.io.StdIn.readLine
 object Project0 {
 
   def main(args: Array[String]): Unit = {
+    val loggedIn = 0
     println("Hello! Welcome to the transaction App!")
     val username = readLine("Please enter your username: ")
-    dbConnection()
-    getAcctBalance()
-    getAcctNum()
+    val password = readLine("Please enter your password ")
+    val accessLevel = username
+    if(!username.equals("Admin") || !password.equals("root")){
+      println("Incorrect login credentials!")
+      return
+    }
 
+    println("Welcome " + username + " what would you like to do? ")
+    println("Press:\n 1. To view balance\n 2. Get account number or\n 3. View account type\n 4. View when last paid.")
+    val adminRes = readLine()
 
+    if(adminRes.equals("1")) {
+      println("Your balance is:")
+      getAcctBalance()
+    } else if(adminRes.equals("2")){
+      println("Your account number is:")
+      getAcctNum()
+    }
 
   }
+
+
+
   def dbConnection (): Connection = {
     val connection ="jdbc:mysql://127.0.0.1:3306/UserInfo"
     val userName = "root"
