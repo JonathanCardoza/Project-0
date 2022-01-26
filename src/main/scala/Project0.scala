@@ -8,7 +8,7 @@ object Project0 {
     val loggedIn = 0
     println("Hello! Welcome to the transaction App!")
     val username = readLine("Please enter your username: ")
-    val password = readLine("Please enter your password ")
+    val password = readLine("Please enter your password: ")
     val accessLevel = username
     if((!username.equals("Admin") || !password.equals("root")) &&
       (!username.equals("user") || !password.equals("user"))){
@@ -17,20 +17,18 @@ object Project0 {
     }
     if(accessLevel.equals("Admin")){
       println("Welcome " + username + ", what would you like to do? ")
-      println("Press:\n 1. View list of Clients' ID\n 2. View list of Clients' name\n 3. View list of clients' account type\n 4. Add a new Client.")
+      println("Press:\n 1. View list of Clients' name\n 2. View list of Clients' name and ID \n 3. Add a new client")
       val adminRes = readLine()
       if(adminRes.equals("1")) {
-        println("Here is the list of Clients' ID:")
-        getClientsID()
-      } else if(adminRes.equals("2")){
-        println("Here is the list of clients:")
+        println("Here is the list of Clients' name:")
         getClientsName()
+      } else if(adminRes.equals("2")){
+        println("Here is the list of clients' ID and name:")
+        getClientsIDAndName()
       } else if(adminRes.equals("3")){
-        println("Here is the list of Clients' account type:")
-        getClientsAcctType()
-      }else if(adminRes.equals("4")){
         addAClient()
       }
+
     } else if(accessLevel.equals("user")){
       println("Welcome " + username + ", what would you like to do?" )
       println("Press:\n 1. View Balance\n 2. View last paid\n 3. Make a deposit")
@@ -67,7 +65,7 @@ object Project0 {
 
   }
 
-  def getClientsID() : Connection = {
+  def getClientsIDAndName() : Connection = {
     val connection ="jdbc:mysql://127.0.0.1:3306/UserInfo"
     val userName = "root"
     val password ="Special7791@"
@@ -77,12 +75,13 @@ object Project0 {
     try {
       Class.forName(driver)
       val con = DriverManager.getConnection(connection, userName, password)
-      val query = "SELECT ID FROM ClientInfo"
+      val query = "SELECT ID , Name FROM ClientInfo"
       val statement = con.createStatement()
       val resultSet = statement.executeQuery(query)
       while(resultSet.next()) {
         val ID = resultSet.getInt("ID")
-        println(ID)
+        val name = resultSet.getString("Name")
+        println("ID:" + ID + ", " + name)
       }
       if(con != null)
         System.out.println("Database connection is successful!")
@@ -210,7 +209,7 @@ object Project0 {
       val con = DriverManager.getConnection(connection, userName, password)
       val acctID= readLine("Please enter AcctID: ")
       val makeDeposit = readLine("Please enter amount you would like to deposit in USD: ")
-      val query = "UPDATE BankInfo SET Balance = '"+makeDeposit+"' WHERE AcctID = '"+acctID+"'"
+      val query = "UPDATE BankInfo SET Balance = Sum'"+makeDeposit+"' WHERE AcctID = '"+acctID+"'"
       val statement = con.createStatement()
       val resultSet = statement.executeUpdate(query)
       if(con != null)
