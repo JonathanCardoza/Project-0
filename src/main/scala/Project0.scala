@@ -5,40 +5,50 @@ import scala.io.StdIn.readLine
 object Project0 {
 
   def main(args: Array[String]): Unit = {
-    val loggedIn = 0
+    val loggedIn = true
     println("Hello! Welcome to the transaction App!")
     val username = readLine("Please enter your username: ")
     val password = readLine("Please enter your password: ")
     val accessLevel = username
-    if((!username.equals("Admin") || !password.equals("root")) &&
-      (!username.equals("user") || !password.equals("user"))){
-      println("Incorrect login credentials!")
-      return
-    }
-    if(accessLevel.equals("Admin")){
-      println("Welcome " + username + ", what would you like to do? ")
-      println("Press:\n 1. View list of Clients' name\n 2. View list of Clients' name and ID \n 3. Add a new client")
-      val adminRes = readLine()
-      if(adminRes.equals("1")) {
-        println("Here is the list of Clients' name:")
-        getClientsName()
-      } else if(adminRes.equals("2")){
-        println("Here is the list of clients' ID and name:")
-        getClientsIDAndName()
-      } else if(adminRes.equals("3")){
-        addAClient()
+    while(loggedIn.equals(true)){
+      if((!username.equals("Admin") || !password.equals("root")) &&
+        (!username.equals("user") || !password.equals("user"))){
+        println("Incorrect login credentials!")
+        return
       }
+      if(accessLevel.equals("Admin")){
+        println("Welcome " + username + ", what would you like to do? ")
+        println("Press:\n 1. View list of Clients' name\n 2. View list of Clients' name and ID \n 3. Add a new client"+
+        "\n 4. To exit")
+        val adminRes = readLine()
+        if(adminRes.equals("1")) {
+          println("Here is the list of Clients' name:")
+          getClientsName()
+        } else if(adminRes.equals("2")){
+          println("Here is the list of clients' ID and name:")
+          getClientsIDAndName()
+        } else if(adminRes.equals("3")){
+          addAClient()
+        } else {
+          println("Thank you have a nice day!")
+          return
+        }
 
-    } else if(accessLevel.equals("user")){
-      println("Welcome " + username + ", what would you like to do?" )
-      println("Press:\n 1. View Balance\n 2. View last paid\n 3. Make a deposit")
-      val userRes = readLine()
-      if(userRes.equals("1")){
-        viewBalance()
-      }else if(userRes.equals("2")){
-        viewLastPaid()
-      }else if(userRes.equals("3")){
-        makeDeposit()
+      } else if(accessLevel.equals("user")){
+        println("Welcome " + username + ", what would you like to do?" )
+        println("Press:\n 1. View Balance\n 2. View last paid\n 3. Make a deposit\n 4. To exit")
+        val userRes = readLine()
+        if(userRes.equals("1")){
+          viewBalance()
+        }else if(userRes.equals("2")){
+          viewLastPaid()
+        }else if(userRes.equals("3")){
+          makeDeposit()
+        } else {
+          println("Have a nice day!")
+          return
+        }
+
       }
 
     }
@@ -209,7 +219,7 @@ object Project0 {
       val con = DriverManager.getConnection(connection, userName, password)
       val acctID= readLine("Please enter AcctID: ")
       val makeDeposit = readLine("Please enter amount you would like to deposit in USD: ")
-      val query = "UPDATE BankInfo SET Balance = Sum'"+makeDeposit+"' WHERE AcctID = '"+acctID+"'"
+      val query = "UPDATE BankInfo SET Balance = '"+makeDeposit+"' WHERE AcctID = '"+acctID+"'"
       val statement = con.createStatement()
       val resultSet = statement.executeUpdate(query)
       if(con != null)
