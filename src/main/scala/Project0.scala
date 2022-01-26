@@ -36,7 +36,7 @@ object Project0 {
 
       } else if(accessLevel.equals("user")){
         println("Welcome " + username + ", what would you like to do?" )
-        println("Press:\n 1. View Balance\n 2. View last paid\n 3. Make a deposit\n 4. To exit")
+        println("Press:\n 1. View Balance\n 2. View last paid\n 3. Make a deposit\n 4. Make withdraw\n 5. To exit")
         val userRes = readLine()
         if(userRes.equals("1")){
           viewBalance()
@@ -44,7 +44,9 @@ object Project0 {
           viewLastPaid()
         }else if(userRes.equals("3")){
           makeDeposit()
-        } else {
+        } else if(userRes.equals("4")) {
+          makeWithdraw()
+        }else {
           println("Have a nice day!")
           return
         }
@@ -169,8 +171,8 @@ object Project0 {
       val resultSet = statement.executeQuery(query)
       while(resultSet.next()) {
         println("Your Balance is:")
-        val ID = resultSet.getInt("Balance" )
-        println("$" + ID)
+        val balance = resultSet.getInt("Balance" )
+        println("$" + balance)
       }
       if(con != null)
         System.out.println("Database connection is successful!")
@@ -219,11 +221,48 @@ object Project0 {
       val con = DriverManager.getConnection(connection, userName, password)
       val acctID= readLine("Please enter AcctID: ")
       val makeDeposit = readLine("Please enter amount you would like to deposit in USD: ")
-      val query = "UPDATE BankInfo SET Balance = '"+makeDeposit+"' WHERE AcctID = '"+acctID+"'"
+      val query = "UPDATE BankInfo SET Balance = Balance + '"+makeDeposit+"' WHERE AcctID = '"+acctID+"'"
+      val balance = "SELECT Balance FROM BankInfo WHERE AcctID = '"+acctID+"'"
       val statement = con.createStatement()
       val resultSet = statement.executeUpdate(query)
+      val statement1 = con.createStatement()
+      val res = statement.executeQuery(balance)
+      while(res.next()) {
+        val balance = res.getInt("Balance")
+        println("Your new balance is\n" + "$" + balance)
+      }
       if(con != null)
         System.out.println("Deposit successfully completed!")
+    } catch {
+      case e: Exception =>
+        e.printStackTrace()
+    }
+    return con
+  }
+  def makeWithdraw() : Connection = {
+    val connection ="jdbc:mysql://127.0.0.1:3306/UserInfo"
+    val userName = "root"
+    val password ="Special7791@"
+    val driver = "com.mysql.cj.jdbc.Driver"
+    val con = DriverManager.getConnection(connection, userName, password)
+
+    try {
+      Class.forName(driver)
+      val con = DriverManager.getConnection(connection, userName, password)
+      val acctID= readLine("Please enter AcctID: ")
+      val makeWithdraw = readLine("Please enter amount you would like to withdraw in USD: ")
+      val query = "UPDATE BankInfo SET Balance = Balance - '"+makeWithdraw+"' WHERE AcctID = '"+acctID+"'"
+      val balance = "SELECT Balance FROM BankInfo WHERE AcctID = '"+acctID+"'"
+      val statement = con.createStatement()
+      val resultSet = statement.executeUpdate(query)
+      val statement1 = con.createStatement()
+      val res = statement.executeQuery(balance)
+      while(res.next()) {
+        val balance = res.getInt("Balance")
+        println("Your new balance is\n" + "$" + balance)
+      }
+      if(con != null)
+        System.out.println("Withdraw successfully completed!")
     } catch {
       case e: Exception =>
         e.printStackTrace()
