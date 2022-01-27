@@ -1,4 +1,3 @@
-import java.awt.print.Printable
 import java.sql.{Connection, DriverManager}
 import scala.io.StdIn.readLine
 
@@ -18,7 +17,7 @@ object Project0 {
       }
       if(accessLevel.equals("Admin")){
         println("Welcome " + username + ", what would you like to do? ")
-        println("Press:\n 1. View list of Clients' name\n 2. View list of Clients' name and ID \n 3. Add a new client"+
+        println("Press:\n 1. Look up client by name\n 2. View list of Clients' name and ID \n 3. Add a new client"+
         "\n 4. To exit")
         val adminRes = readLine()
         if(adminRes.equals("1")) {
@@ -96,7 +95,7 @@ object Project0 {
         println("ID:" + ID + ", " + name)
       }
       if(con != null)
-        System.out.println("Database connection is successful!")
+        System.out.println("")
     } catch {
       case e: Exception =>
         e.printStackTrace()
@@ -114,47 +113,25 @@ object Project0 {
     try {
       Class.forName(driver)
       val con = DriverManager.getConnection(connection, userName, password)
-      val query = "SELECT Name FROM ClientInfo"
+      val name = readLine("Please enter a name to look: ")
+      val query = "SELECT ID, Name, AcctType FROM ClientInfo WHERE Name = '"+name+"'"
       val statement = con.createStatement()
       val resultSet = statement.executeQuery(query)
       while(resultSet.next()) {
+        val id = resultSet.getInt("ID")
         val clientsName = resultSet.getString("Name")
-        println(clientsName)
-      }
-      if(con != null)
-        System.out.println("Database connection is successful!")
-    } catch {
-      case e: Exception =>
-        e.printStackTrace()
-    }
-    return con
-  }
-
-  def getClientsAcctType() : Connection = {
-    val connection ="jdbc:mysql://127.0.0.1:3306/UserInfo"
-    val userName = "root"
-    val password ="Special7791@"
-    val driver = "com.mysql.cj.jdbc.Driver"
-    val con = DriverManager.getConnection(connection, userName, password)
-
-    try {
-      Class.forName(driver)
-      val con = DriverManager.getConnection(connection, userName, password)
-      val query = "SELECT AcctType FROM ClientInfo"
-      val statement = con.createStatement()
-      val resultSet = statement.executeQuery(query)
-      while(resultSet.next()) {
         val acctType = resultSet.getString("AcctType")
-        println(acctType)
+        println("ID:" + id + ", " + name + ", " + acctType)
       }
       if(con != null)
-        System.out.println("Database connection is successful!")
+        System.out.println("")
     } catch {
       case e: Exception =>
         e.printStackTrace()
     }
     return con
   }
+
   def viewBalance() : Connection = {
     val connection ="jdbc:mysql://127.0.0.1:3306/UserInfo"
     val userName = "root"
@@ -175,7 +152,7 @@ object Project0 {
         println("$" + balance)
       }
       if(con != null)
-        System.out.println("Database connection is successful!")
+        System.out.println("")
     } catch {
       case e: Exception =>
         e.printStackTrace()
@@ -201,7 +178,7 @@ object Project0 {
         println("The last time you were paid was on:\n" +lastPaid)
       }
       if(con != null)
-        System.out.println("Database connection is successful!")
+        System.out.println("")
     } catch {
       case e: Exception =>
         e.printStackTrace()
@@ -229,7 +206,7 @@ object Project0 {
       val res = statement.executeQuery(balance)
       while(res.next()) {
         val balance = res.getInt("Balance")
-        println("Your new balance is\n" + "$" + balance)
+        println("Your new balance is:\n" + "$" + balance)
       }
       if(con != null)
         System.out.println("Deposit successfully completed!")
@@ -259,7 +236,7 @@ object Project0 {
       val res = statement.executeQuery(balance)
       while(res.next()) {
         val balance = res.getInt("Balance")
-        println("Your new balance is\n" + "$" + balance)
+        println("Your new balance is:\n" + "$" + balance)
       }
       if(con != null)
         System.out.println("Withdraw successfully completed!")
